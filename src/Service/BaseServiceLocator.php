@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Service;
+namespace Burzum\Cake\Service;
 
 
-use Burzum\Cake\Service\ServiceLocator;
 
 class BaseServiceLocator extends ServiceLocator {
     protected function _create($class, $alias, $config)
