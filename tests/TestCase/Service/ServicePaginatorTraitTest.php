@@ -11,9 +11,9 @@
  * @since         1.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Burzum\Cake\Service;
+namespace Burzum\CakeServiceLayer\Service;
 
 use App\Service\ArticlesService;
 use Cake\Http\ServerRequest;
@@ -31,7 +31,7 @@ class ServicePaginatorTraitTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'core.Articles'
+        'core.Articles',
     ];
 
     /**
@@ -39,7 +39,7 @@ class ServicePaginatorTraitTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }

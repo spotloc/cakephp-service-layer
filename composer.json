@@ -2,29 +2,42 @@
     "name": "burzum/cakephp-service-layer",
     "type": "cakephp-plugin",
     "license": "MIT",
+    "description": "Service layer and domain / business model implementation for CakePHP",
     "authors": [
         {
-            "name": "Florian Krämer"
+            "name": "Florian Krämer",
+            "role": "Maintainer"
+        },
+        {
+            "name": "Mark Scherer",
+            "role": "Contributor"
         }
     ],
     "require": {
-        "cakephp/cakephp": "^3.5"
+        "php": ">=7.2",
+        "cakephp/cakephp": "^4.0"
     },
     "require-dev": {
-        "dereuromark/cakephp-ide-helper": "@stable",
-        "phpunit/phpunit": "^5.7.14|^6.0",
-        "cakephp/cakephp-codesniffer": "^3.0"
+        "phpunit/phpunit": "^8.5.0",
+        "cakephp/cakephp-codesniffer": "^3.0",
+        "dereuromark/cakephp-ide-helper": "^1.0",
+        "phpstan/phpstan": "^0.12.14"
     },
     "autoload": {
         "psr-4": {
-            "Burzum\\Cake\\": "src/"
+            "Burzum\\CakeServiceLayer\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "App\\": "tests/test_app/src/",
-            "Burzum\\Cake\\Test\\": "tests/",
+            "Burzum\\CakeServiceLayer\\Test\\": "tests/",
             "Cake\\Test\\Fixture\\": "vendor/cakephp/cakephp/tests/Fixture/"
         }
+    },
+    "scripts": {
+        "stan": "vendor/bin/phpstan analyze src/",
+        "cs-check": "phpcs --colors --parallel=16 -p src/ tests/",
+        "cs-fix": "phpcbf --colors --parallel=16 -p src/ tests/"
     }
 }

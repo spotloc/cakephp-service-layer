@@ -10,13 +10,14 @@
  * @since         1.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Burzum\Cake\Generator\Task;
+namespace Burzum\CakeServiceLayer\Generator\Task;
 
 use Cake\Core\App;
 use Cake\Core\Plugin;
 use Cake\Filesystem\Folder;
+use IdeHelper\Generator\Directive\Override;
 use IdeHelper\Generator\Task\TaskInterface;
 
 /**
@@ -27,17 +28,16 @@ class ServiceTask implements TaskInterface
     /**
      * Aliases
      *
-     * @var array
+     * @var string[]
      */
     protected $aliases = [
-        '\Burzum\Cake\Service\ServiceAwareTrait::loadService(0)',
-        '\ServiceAwareTrait::loadService(0)',
+        '\Burzum\CakeServiceLayer\Service\ServiceAwareTrait::loadService(0)',
     ];
 
     /**
      * Buffer
      *
-     * @var array|null
+     * @var string[]|null
      */
     protected static $services;
 
@@ -50,9 +50,9 @@ class ServiceTask implements TaskInterface
     }
 
     /**
-     * @return array
+     * @return \IdeHelper\Generator\Directive\BaseDirective[]
      */
-    public function collect()
+    public function collect(): array
     {
         $map = [];
 
@@ -63,7 +63,8 @@ class ServiceTask implements TaskInterface
 
         $result = [];
         foreach ($this->aliases as $alias) {
-            $result[$alias] = $map;
+            $directive = new Override($alias, $map);
+            $result[$directive->key()] = $directive;
         }
 
         return $result;
@@ -80,16 +81,16 @@ class ServiceTask implements TaskInterface
 
         $services = [];
 
-        $folders = App::path('Service');
+        $folders = App::classPath('Service');
         foreach ($folders as $folder) {
             $services = $this->addServices($services, $folder);
         }
 
         $plugins = Plugin::loaded();
         foreach ($plugins as $plugin) {
-            $folders = App::path('Service', $plugin);
+            $folders = App::classPath('Service', $plugin);
             foreach ($folders as $folder) {
-                $services = $this->addServices($services, $folder, $plugin);
+                $services = $this->addServices($services, $folder, null, $plugin);
             }
         }
 
@@ -99,14 +100,15 @@ class ServiceTask implements TaskInterface
     }
 
     /**
-     * @param array $services Services array
-     * @param string $folder Folder
+     * @param string[] $services Services array
+     * @param string $path Path
+     * @param string|null $subFolder Sub folder
      * @param string|null $plugin Plugin
      * @return string[]
      */
-    protected function addServices(array $services, $folder, $plugin = null)
+    protected function addServices(array $services, $path, $subFolder = null, $plugin = null)
     {
-        $folderContent = (new Folder($folder))->read(Folder::SORT_NAME, true);
+        $folderContent = (new Folder($path))->read(Folder::SORT_NAME, true);
 
         foreach ($folderContent[1] as $file) {
             preg_match('/^(.+)Service\.php$/', $file, $matches);
@@ -114,6 +116,10 @@ class ServiceTask implements TaskInterface
                 continue;
             }
             $service = $matches[1];
+            if ($subFolder) {
+                $service = $subFolder . '/' . $service;
+            }
+
             if ($plugin) {
                 $service = $plugin . '.' . $service;
             }
@@ -124,6 +130,11 @@ class ServiceTask implements TaskInterface
             }
 
             $services[$service] = $className;
+        }
+
+        foreach ($folderContent[0] as $subDirectory) {
+            $nextSubFolder = $subFolder ? $subFolder . '/' . $subDirectory : $subDirectory;
+            $services = $this->addServices($services, $path . $subDirectory . DS, $nextSubFolder, $plugin);
         }
 
         return $services;

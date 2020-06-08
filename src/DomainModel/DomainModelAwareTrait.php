@@ -11,9 +11,9 @@
  * @since         1.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Burzum\Cake\DomainModel;
+namespace Burzum\CakeServiceLayer\DomainModel;
 
 use Cake\Core\ObjectRegistry;
 

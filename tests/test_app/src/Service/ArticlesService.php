@@ -11,20 +11,22 @@
  * @since         1.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Service;
 
-use Burzum\Cake\Service\ServicePaginatorTrait;
+use Burzum\CakeServiceLayer\Service\ServicePaginatorTrait;
 use Cake\Datasource\ModelAwareTrait;
 
-/**
- * ServicePaginatorTraitTest
- */
 class ArticlesService
 {
     use ModelAwareTrait;
     use ServicePaginatorTrait;
+
+    /**
+     * @var \Cake\ORM\Table
+     */
+    protected $Articles;
 
     /**
      * Constructor
@@ -41,12 +43,13 @@ class ArticlesService
      */
     public function initialize()
     {
-        $this->loadModel('Articles');
+        $this->Articles = $this->loadModel('Articles');
     }
 
     /**
      * List articles
      *
+     * @param \Cake\Http\ServerRequest $request
      * @return \Cake\Datasource\ResultSetInterface|array
      */
     public function listing($request)

@@ -11,9 +11,9 @@
  * @since         1.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Burzum\Cake\Service;
+namespace Burzum\CakeServiceLayer\Service;
 
 use Cake\Http\ServerRequest;
 use Cake\ORM\ResultSet;
@@ -31,7 +31,7 @@ class PaginationServiceTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'core.Articles'
+        'core.Articles',
     ];
 
     /**
@@ -44,10 +44,11 @@ class PaginationServiceTest extends TestCase
         $request = new ServerRequest();
         $service = new PaginationService($request);
 
-        $this->assertFalse($request->getParam('paging'));
+        $articles = TableRegistry::getTableLocator()->get('Articles');
 
-        $articles = TableRegistry::get('Articles');
         $result = $service->paginate($articles);
+        $request = $service->addPagingParamToRequest($request);
+
         $params = $request->getParam('paging');
         $expected = [
             'Articles' => [
@@ -60,16 +61,19 @@ class PaginationServiceTest extends TestCase
                 'nextPage' => false,
                 'pageCount' => 1,
                 'sort' => null,
-                'direction' => false,
+                'direction' => null,
                 'limit' => null,
                 'sortDefault' => false,
                 'directionDefault' => false,
                 'scope' => null,
-                'completeSort' => []
+                'completeSort' => [],
+                'start' => 1,
+                'end' => 3,
+                'requestedPage' => 1,
             ],
-            false
         ];
-        $this->assertInternalType('array', $params);
+
+        $this->assertIsArray($params);
         $this->assertEquals($expected, $params);
         $this->assertInstanceOf(ResultSet::class, $result);
     }

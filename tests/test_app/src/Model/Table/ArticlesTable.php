@@ -11,12 +11,10 @@
  * @since         1.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Model\Table;
 
-use Burzum\Cake\Service\ServicePaginatorTrait;
-use Cake\Datasource\ModelAwareTrait;
 use Cake\ORM\Table;
 
 /**
@@ -30,7 +28,7 @@ class ArticlesTable extends Table
      * @param array $config Config
      * @return void
      */
-    public function initialize(array $config = [])
+    public function initialize(array $config = []): void
     {
         parent::initialize($config);
     }

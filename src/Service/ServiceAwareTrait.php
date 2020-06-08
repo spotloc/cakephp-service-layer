@@ -11,9 +11,9 @@
  * @since         1.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Burzum\Cake\Service;
+namespace Burzum\CakeServiceLayer\Service;
 
 use Cake\Core\ObjectRegistry;
 
@@ -41,6 +41,8 @@ trait ServiceAwareTrait
     /**
      * Load a service
      *
+     * If the service is in a subfolder, this folder name will be stripped for the property name when assigned.
+     *
      * @param string $service Service Name
      * @param array $constructorArgs Constructor Args
      * @param bool $assignProperty Assigns the service to a class property of the same name as  the service
@@ -48,16 +50,20 @@ trait ServiceAwareTrait
      */
     public function loadService($service, array $constructorArgs = [], $assignProperty = true)
     {
+        list(, $name) = pluginSplit($service);
+
+        if (strpos($name, '/') !== false) {
+            $name = substr($name, strrpos($name, '/') + 1);
+        }
+
+        if ($assignProperty && isset($this->{$name})) {
+            return $this->{$name};
+        }
+
         $serviceInstance = $this->getServiceLocator()->load($service, $constructorArgs);
 
         if (!$assignProperty) {
             return $serviceInstance;
-        }
-
-        list(, $name) = pluginSplit($service);
-
-        if (isset($this->{$name})) {
-            trigger_error(__CLASS__ . '::$%s is already in use.', E_USER_WARNING);
         }
 
         $this->{$name} = $serviceInstance;
