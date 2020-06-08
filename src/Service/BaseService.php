@@ -1,5 +1,5 @@
 <?php
-namespace Burzum\Cake\Service;
+namespace Burzum\CakeServiceLayer\Service;
 
 use Cake\Core\InstanceConfigTrait;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Burzum\Cake\Service;
+namespace Burzum\CakeServiceLayer\Service;
 
 
 trait BaseServiceAwareTrait  {
